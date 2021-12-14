@@ -20,7 +20,10 @@ dictionnaire ={"le" : 0, "la" : 0, "chat" : 2, "souris" : 2, "martin" : 4,
 "mange" : 3, "la" : 0, "petite" : 1, "joli" : 1, "grosse" : 1, 
 "bleu" : 1, "verte" : 1, "dort" : 3,"julie" : 4, "jean" : 4, "." : 5}
 
-phrase = "la souris verte dort ."
+phrasedur = "la souris verte dort ."
+
+#tableau des transitions
+
 etat = [
         [1,8,8,8,4,8],#attente 0/4
         [8,1,2,8,8,8],#attente 1/2
@@ -35,18 +38,57 @@ etat = [
         ]
 
 def syntaxe(phrase,dictionnaire,etat):
-    phrase = phrase.split()
     phrase_indice = []
     etat_p = 0
-    for i in phrase:
+    
+    #convertie la phrase avec les valeur du dictionnaire
+    
+    for i in phrase: 
         phrase_indice.append(dictionnaire[i])
-        print(phrase_indice)
+        
+    #recuperer la valeurde l'etat precedent
+        
     for k in phrase_indice:
-        print(etat_p)
         etat_p = etat[etat_p][k]
-    print("etat p : " ,etat_p)
     if etat_p == 9:
         print("phrase correcte")
     else:
         print("phrase fausse")
-syntaxe(phrase, dictionnaire,etat)
+        
+
+
+def saisie():
+    x  = input("rentrer une phrase : ")
+    if x[-1] == "." and x[-2] != " ":
+        x = x[:-1]
+        x = x.split()
+        x.append(".")
+        return x
+    else:
+        x = x.split()
+        return x
+
+#fonction qui permet de lire un dictionnaire francais complet (j'ai juste utilisé la lettre A car l'alphabet complet etait trop volumineux)
+
+def lecturedico():
+    dicofrancais = {}
+    for ligne in open("dicoFrancais.txt"):
+        ligne = ligne.split()
+        ligne.pop(1)
+        ligne[1]=ligne[1].split(":")
+        if ligne[1][0] == "Ver":
+            dicofrancais[ligne[0]]=3
+        if ligne[1][0] == "Adj":
+            dicofrancais[ligne[0]]=1
+        if ligne[1][0] == "Nom":
+            dicofrancais[ligne[0]]=2
+        if ligne[1][0] == "Det":
+            dicofrancais[ligne[0]]=0
+        if ligne[1][0] == "NomP":
+            dicofrancais[ligne[0]]=4
+        
+    return dicofrancais
+#lecturedico()   
+
+
+syntaxe(saisie(), dictionnaire,etat)
